@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wahyu Bambang S. - Portofolio & IoT Simulator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-green': '0 0 15px rgba(16, 185, 129, 0.4)',
+                        'neon-amber': '0 0 20px rgba(245, 158, 11, 0.6)',
+                        'neon-blue': '0 0 15px rgba(59, 130, 246, 0.5)',
+                        'neon-red': '0 0 20px rgba(239, 68, 68, 0.6)',
+                        'premium': '0 10px 30px -10px rgba(0,0,0,0.7)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Animation untuk Kipas */
+        @keyframes spin-fast {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fan-spin {
+            animation: spin-fast 0.4s linear infinite;
+        }
+        .fan-spin-slowdown {
+            animation: spin-fast 2s linear infinite;
+            transition: ease-out 2s;
+        }
+        
+        /* Pulse untuk Sensor PIR */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.95); opacity: 0; }
+        }
+        .pir-pulse::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: rgb(239, 68, 68);
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+        }
+
+        /* Custom scrollbar untuk log */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-900 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 px-4 py-4 md:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
+                    <i class="fa-solid fa-microchip text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                        Wahyu Bambang S.
+                    </h1>
+                    <p class="text-[11px] text-slate-400 font-medium">IoT & Electrical Maintenance Showcase</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <a href="#portfolio-section" class="text-xs font-semibold text-slate-400 hover:text-emerald-400 transition">Profil</a>
+                <span class="text-slate-800">|</span>
+                <a href="#skills-section" class="text-xs font-semibold text-slate-400 hover:text-emerald-400 transition">Keahlian</a>
+                <span class="text-slate-800">|</span>
+                <a href="#simulator-section" class="text-xs font-semibold px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg border border-emerald-500/20 transition flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    Coba Demo Alat
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN PORTFOLIO & APP WRAPPER -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8 space-y-8 flex-grow">
+
+        <!-- ================= SECTION 1: PROFIL PROFESIONAL (HRD CORNER) ================= -->
+        <section id="portfolio-section" class="bg-slate-900 border border-slate-800/80 rounded-3xl p-6 md:p-8 shadow-premium relative overflow-hidden">
+            <!-- Background Decorative Ambient Light -->
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-500/5 rounded-full blur-[80px] pointer-events-none"></div>
+            <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
+                <!-- Kiri: Foto, Nama, Kontak Utama (4 Kolom) -->
+                <div class="lg:col-span-4 flex flex-col items-center lg:items-start text-center lg:text-left border-b lg:border-b-0 lg:border-r border-slate-800/80 pb-6 lg:pb-0 lg:pr-8">
+                    <!-- Avatar / Foto Profil (Dengan Badge Open To Work & Efek Glow) -->
+                    <div class="relative mb-5 group">
+                        <div class="absolute -inset-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+                        <div class="relative w-36 h-36 bg-slate-950 rounded-2xl border-2 border-slate-800 flex items-center justify-center overflow-hidden">
+                            <!-- Placeholder Foto yang Sangat Elegan, user bisa mengganti dengan file gambarnya nanti -->
+                            <div class="text-slate-600 flex flex-col items-center">
+                                <i class="fa-solid fa-user-gear text-5xl text-emerald-400/90 mb-1"></i>
+                                <span class="text-[9px] uppercase tracking-widest text-slate-500 font-bold">Maintenance Specialist</span>
+                            </div>
+                        </div>
+                        <!-- Green Pulse Badge 'Open to Work' -->
+                        <span class="absolute -bottom-2 right-2 bg-emerald-500 text-slate-950 font-extrabold text-[9px] px-2.5 py-1 rounded-full border-2 border-slate-900 tracking-wider flex items-center gap-1 animate-pulse">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-950"></span> OPEN TO WORK
+                        </span>
+                    </div>
+
+                    <!-- Nama dan Jabatan -->
+                    <h2 class="text-2xl font-black text-slate-100 tracking-tight leading-none">
+                        WAHYU BAMBANG S.
+                    </h2>
+                    <p class="text-xs font-bold text-emerald-400 mt-2 tracking-wider uppercase">
+                        Electrical & Building Maintenance Supervisor
+                    </p>
+
+                    <!-- Lokasi & Detail Tambahan -->
+                    <div class="flex items-center gap-2 mt-3 text-slate-400 text-xs justify-center lg:justify-start">
+                        <i class="fa-solid fa-location-dot text-emerald-400"></i>
+                        <span>Sidoarjo, Jawa Timur, Indonesia</span>
+                    </div>
+
+                    <!-- Tombol Kontak & Tautan Utama -->
+                    <div class="w-full space-y-2.5 mt-6">
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/in/wahyu-bambang-s" target="_blank" 
+                           class="w-full py-2.5 px-4 bg-[#0a66c2]/10 hover:bg-[#0a66c2]/20 border border-[#0a66c2]/30 hover:border-[#0a66c2]/60 text-slate-200 hover:text-white font-bold text-xs rounded-xl transition duration-200 flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-linkedin text-base text-[#0a66c2]"></i>
+                            LinkedIn Profil
+                        </a>
+
+                        <!-- Personal Website / GitHub Blog -->
+                        <a href="https://wahyu-bambang-s.github.io" target="_blank" 
+                           class="w-full py-2.5 px-4 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white font-bold text-xs rounded-xl transition duration-200 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-globe text-base text-emerald-400"></i>
+                            Kunjungi Website / Blog Saya
+                        </a>
+
+                        <!-- Row Kontak Langsung (WhatsApp & Email) -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <!-- WhatsApp -->
+                            <a href="https://wa.me/6282334351232" target="_blank" 
+                               class="py-2.5 px-2 bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition hover:bg-emerald-400 duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10">
+                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                                WhatsApp
+                            </a>
+                            <!-- Email -->
+                            <a href="mailto:w.b.suhermanto@gmail.com" 
+                               class="py-2.5 px-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 font-bold text-xs rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-slate-200">
+                                <i class="fa-regular fa-envelope text-sm"></i>
+                                Kirim Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kanan: Ringkasan & Portofolio Intro (8 Kolom) -->
+                <div class="lg:col-span-8 space-y-6">
+                    <div>
+                        <h3 class="text-xs uppercase tracking-widest text-slate-500 font-extrabold mb-2">Ringkasan Profesional</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed font-light">
+                            Electrical & Building Maintenance Supervisor dengan pengalaman <strong class="text-emerald-400 font-semibold">19+ tahun</strong> dalam pengelolaan fasilitas gedung bertingkat, sistem distribusi tenaga listrik, HVAC, fire protection, dan building automation. Berpengalaman memimpin tim teknisi, <em class="not-italic text-slate-100 font-medium">preventive maintenance</em>, dan <em class="not-italic text-slate-100 font-medium">troubleshooting</em>, serta sukses mengimplementasikan solusi digital berbasis Python, AppSheet, dan IoT yang terbukti meningkatkan efisiensi operasional serta keandalan sistem hingga <strong class="text-emerald-400 font-semibold">availability &gt;99,5%</strong>.
+                        </p>
+                    </div>
+
+                    <!-- Highlight Pencapaian -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                        <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
+                            <i class="fa-solid fa-business-time text-2xl text-emerald-400"></i>
+                            <div>
+                                <div class="text-base font-black">19+ Tahun</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Pengalaman Kerja</div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
+                            <i class="fa-solid fa-chart-line text-2xl text-emerald-400"></i>
+                            <div>
+                                <div class="text-base font-black">&gt;99,5%</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">System Availability</div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
+                            <i class="fa-solid fa-sliders text-2xl text-emerald-400"></i>
+                            <div>
+                                <div class="text-base font-black">IoT & Apps</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Solusi Efisiensi Energi</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ide Konsep & Project Showcase -->
+                    <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-lightbulb"></i> Showcase Ide / Ideasi Desain:
+                            </h4>
+                            <p class="text-[11px] text-slate-400">
+                                Sistem Otomasi Kontrol Sensor PIR hemat energi berbasis Web Simulator (ESP32 Logic Mockup).
+                            </p>
+                        </div>
+                        <a href="#simulator-section" class="text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-4 py-2 rounded-lg transition shrink-0">
+                            Coba Simulator Di Bawah <i class="fa-solid fa-arrow-down ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: SKILLS MATRIX (KEAHLIAN UTAMA) ================= -->
+        <section id="skills-section" class="space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="h-px bg-slate-800 flex-grow"></div>
+                <h3 class="text-sm font-black tracking-widest text-slate-400 uppercase shrink-0 px-2">Keahlian Utama (Core Competencies)</h3>
+                <div class="h-px bg-slate-800 flex-grow"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <!-- Card 1: Fasilitas -->
+                <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl space-y-3 hover:border-emerald-500/30 transition duration-300">
+                    <div class="text-emerald-400 text-xl"><i class="fa-solid fa-building-circle-check"></i></div>
+                    <h4 class="text-xs font-extrabold text-slate-200 tracking-wider uppercase">Fasilitas Gedung</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed font-light">Building Maintenance, HVAC/AHU, Sistem Lift, Plumbing, Pengelolaan Fasilitas Gedung Tinggi.</p>
+                </div>
+                <!-- Card 2: Kelistrikan -->
+                <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl space-y-3 hover:border-emerald-500/30 transition duration-300">
+                    <div class="text-emerald-400 text-xl"><i class="fa-solid fa-bolt"></i></div>
+                    <h4 class="text-xs font-extrabold text-slate-200 tracking-wider uppercase">Arus Kuat & Panel</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed font-light">Main Panel & Sub Panel Operation, Distribusi Kelistrikan, Perawatan Genset, panel maker.</p>
+                </div>
+                <!-- Card 3: Otomatisasi -->
+                <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl space-y-3 hover:border-emerald-500/30 transition duration-300">
+                    <div class="text-emerald-400 text-xl"><i class="fa-solid fa-microchip"></i></div>
+                    <h4 class="text-xs font-extrabold text-slate-200 tracking-wider uppercase">Otomatisasi & IoT</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed font-light">Kontrol VPCB, PLC, Arduino, IoT ESP32, Python, Google Apps Script, AppSheet.</p>
+                </div>
+                <!-- Card 4: K3 -->
+                <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl space-y-3 hover:border-emerald-500/30 transition duration-300">
+                    <div class="text-emerald-400 text-xl"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h4 class="text-xs font-extrabold text-slate-200 tracking-wider uppercase">K3 & Proteksi</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed font-light">Fire Alarm (MCFA), Hydrant, Pemeliharaan APAR, Manajemen K3 (Sertifikasi Disnaker).</p>
+                </div>
+                <!-- Card 5: Manajemen -->
+                <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl space-y-3 hover:border-emerald-500/30 transition duration-300">
+                    <div class="text-emerald-400 text-xl"><i class="fa-solid fa-users-gear"></i></div>
+                    <h4 class="text-xs font-extrabold text-slate-200 tracking-wider uppercase">Manajemen & Tim</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed font-light">Team Leadership, Koordinasi Vendor, Manajemen Proyek, Troubleshooting, Analisis MS Office.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: INTERACTIVE DEMO (SIMULATOR MOTION DETECTOR) ================= -->
+        <section id="simulator-section" class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
+            
+            <!-- KIRI: Kontrol Panel & Log (4 Kolom) -->
+            <div class="lg:col-span-4 flex flex-col gap-6">
+                
+                <!-- Panel Kontrol -->
+                <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500"></div>
+                    
+                    <h2 class="text-sm font-bold mb-4 flex items-center gap-2 text-slate-200">
+                        <i class="fa-solid fa-sliders text-emerald-400"></i> Panel Kontrol Utama (PIR)
+                    </h2>
+
+                    <!-- Konfigurasi Waktu Timer -->
+                    <div class="mb-5">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-semibold text-slate-300">Durasi Aktif Lampu & Fan</label>
+                            <span id="timer-display" class="px-2 py-0.5 bg-slate-950 border border-emerald-500/20 text-emerald-400 font-mono text-[10px] font-bold rounded">
+                                5 Detik
+                            </span>
+                        </div>
+                        <input type="range" id="timer-slider" min="3" max="20" value="5" 
+                               class="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                        <div class="flex justify-between text-[9px] text-slate-500 font-semibold mt-1 px-1">
+                            <span>3d</span>
+                            <span>10d</span>
+                            <span>20d</span>
+                        </div>
+                    </div>
+
+                    <!-- Opsi Mode & Suara -->
+                    <div class="space-y-3 mb-5 border-t border-b border-slate-800/80 py-3">
+                        <!-- Sensor Hover Mode -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-semibold text-slate-300">Pemicu Gerakan Cerdas</span>
+                                <span class="text-[10px] text-slate-500">Gunakan gerakan kursor pada pantry</span>
+                            </div>
+                            <button id="hover-toggle" onclick="toggleHoverMode()" class="relative inline-flex h-5 w-9 items-center rounded-full bg-slate-800 transition-colors focus:outline-none">
+                                <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-slate-400 transition-transform translate-x-1" id="hover-dot"></span>
+                            </button>
+                        </div>
+
+                        <!-- Audio Feedback Switch -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-semibold text-slate-300">Efek Suara Buzzer</span>
+                                <span class="text-[10px] text-slate-500">Umpan balik audio sistem</span>
+                            </div>
+                            <button id="sound-toggle" onclick="toggleSound()" class="relative inline-flex h-5 w-9 items-center rounded-full bg-emerald-500 transition-colors focus:outline-none">
+                                <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform translate-x-4.5" id="sound-dot"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Trigger Manual -->
+                    <button id="trigger-btn" onclick="triggerSensor()" 
+                            class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10 group relative overflow-hidden">
+                        <span class="absolute right-0 top-0 h-full w-12 bg-white/10 skew-x-12 translate-x-12 group-hover:-translate-x-96 transition-transform duration-1000 ease-out"></span>
+                        <i class="fa-solid fa-person-walking text-sm group-hover:animate-bounce"></i>
+                        PICU MOTION SENSOR (PIR)
+                    </button>
+                </div>
+
+                <!-- Log Aktivitas -->
+                <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-4 shadow-xl flex-grow flex flex-col h-[220px]">
+                    <div class="flex justify-between items-center mb-2.5">
+                        <h2 class="text-xs font-bold flex items-center gap-2 text-slate-200">
+                            <i class="fa-solid fa-terminal text-teal-400"></i> Riwayat Sistem (Realtime Log)
+                        </h2>
+                        <button onclick="clearLogs()" class="text-[9px] bg-slate-950 hover:bg-slate-800 border border-slate-800 px-2 py-0.5 rounded text-slate-400 font-semibold transition">
+                            Hapus Log
+                        </button>
+                    </div>
+                    <div id="log-container" class="flex-grow overflow-y-auto bg-slate-950 rounded-xl p-3 font-mono text-[10px] leading-relaxed text-slate-300 custom-scrollbar space-y-1">
+                        <!-- Log entries loaded dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- KANAN: Simulator Visual Pantry & Bagan Alur Kerja (8 Kolom) -->
+            <div class="lg:col-span-8 flex flex-col gap-6">
+                
+                <!-- SIMULATOR VISUAL PANTRY -->
+                <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden flex flex-col">
+                    <div class="absolute top-4 right-4 z-10">
+                        <span id="system-status-badge" class="px-2.5 py-0.5 bg-slate-950 border border-slate-800 text-slate-400 text-[10px] font-bold rounded-full flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full" id="status-badge-dot"></span>
+                            <span id="status-badge-text">STANDBY</span>
+                        </span>
+                    </div>
+
+                    <div class="mb-3">
+                        <h2 class="text-sm font-bold flex items-center gap-2 text-slate-200">
+                            <i class="fa-solid fa-eye text-emerald-400"></i> Demo Pantry Simulator
+                        </h2>
+                        <p class="text-[11px] text-slate-400">Kursor yang masuk ke ruangan (bila Pemicu Cerdas aktif) mewakili orang yang memasuki area pantry.</p>
+                    </div>
+
+                    <!-- Arena Simulator Pantry -->
+                    <div id="pantry-area" 
+                         class="relative w-full h-[260px] rounded-xl border border-slate-800/80 bg-slate-950 overflow-hidden flex items-center justify-center transition-all duration-300"
+                         onmouseenter="handlePantryHover(true)"
+                         onmouseleave="handlePantryHover(false)">
+                         
+                        <!-- Efek Grid Background Ruangan -->
+                        <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b1a_1px,transparent_1px),linear-gradient(to_bottom,#1e293b1a_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+
+                        <!-- Label Pantry -->
+                        <div class="absolute left-3 top-3 bg-slate-900/60 backdrop-blur-sm border border-slate-800 text-[9px] px-1.5 py-0.5 rounded text-slate-400 tracking-wider font-bold">
+                            RUANG PANTRY SIMULATOR
+                        </div>
+
+                        <!-- 1. SENSOR GERAKAN PIR (Dinding Atas) -->
+                        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-10">
+                            <div id="pir-sensor" class="relative w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center transition-all duration-300">
+                                <div class="w-7 h-7 bg-slate-300 rounded-full border border-slate-400 flex items-center justify-center overflow-hidden shadow-inner">
+                                    <div class="w-full h-full bg-slate-100 opacity-60 grid grid-cols-3 grid-rows-3 gap-[1px] p-[1.5px]">
+                                        <div class="bg-slate-300/50 rounded-sm"></div><div class="bg-slate-300/50 rounded-sm"></div><div class="bg-slate-300/50 rounded-sm"></div>
+                                        <div class="bg-slate-300/50 rounded-sm"></div><div class="bg-slate-300/50 rounded-sm"></div><div class="bg-slate-300/50 rounded-sm"></div>
+                                        <div class="bg-slate-300/50 rounded-sm"></div><div class="bg-slate-300/50 rounded-sm"></div><div class="bg-slate-300/50 rounded-sm"></div>
+                                    </div>
+                                </div>
+                                <!-- LED Indikator PIR -->
+                                <div id="pir-led" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-slate-600 rounded-full border-2 border-slate-900 transition-all duration-300"></div>
+                            </div>
+                            <span class="text-[8px] text-slate-500 font-bold mt-1 tracking-wider uppercase">PIR SENSOR</span>
+                        </div>
+
+                        <!-- Area Jangkauan Deteksi Sensor (Visual Gelombang) -->
+                        <div id="detection-beam" class="absolute top-12 left-1/2 -translate-x-1/2 w-[150px] h-[200px] bg-gradient-to-b from-red-500/0 to-red-500/0 clip-path-beam transition-all duration-500 pointer-events-none" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+
+                        <!-- 2. ACTUATOR 1: LAMPU -->
+                        <div class="absolute left-1/4 top-6 flex flex-col items-center">
+                            <!-- Kabel Gantung -->
+                            <div class="w-0.5 h-8 bg-slate-700"></div>
+                            <!-- Kap Lampu -->
+                            <div class="w-10 h-5 bg-slate-800 rounded-t-full border border-slate-700 flex items-end justify-center relative">
+                                <div id="lamp-bulb" class="w-5 h-5 bg-slate-600 rounded-full -mb-2 transition-all duration-300 border border-slate-800 shadow-[0_0_0_rgba(245,158,11,0)]"></div>
+                            </div>
+                            <!-- Pancaran Cahaya Lampu (Glow) -->
+                            <div id="lamp-glow" class="absolute top-[40px] w-[160px] h-[160px] bg-amber-400/0 rounded-full blur-[35px] pointer-events-none transition-all duration-500 -translate-y-8"></div>
+                            <span class="text-[8px] text-slate-500 font-bold mt-4 tracking-wider uppercase">Pantry Light</span>
+                        </div>
+
+                        <!-- 3. ACTUATOR 2: FAN KIPAS -->
+                        <div class="absolute right-1/4 top-10 flex flex-col items-center">
+                            <div class="relative p-2 bg-slate-800 rounded-xl border border-slate-700 shadow-md">
+                                <div class="w-12 h-12 rounded-full border-[2.5px] border-slate-600 flex items-center justify-center relative bg-slate-900 overflow-hidden">
+                                    <div id="fan-blades" class="w-10 h-10 relative flex items-center justify-center transition-all duration-[3000ms] ease-out">
+                                        <div class="w-3 h-3 bg-slate-400 rounded-full z-10 border border-slate-600"></div>
+                                        <div class="absolute w-1.5 h-8 bg-slate-400 rounded-full"></div>
+                                        <div class="absolute w-8 h-1.5 bg-slate-400 rounded-full"></div>
+                                    </div>
+                                </div>
+                                <div id="fan-led" class="absolute top-0.5 right-0.5 w-2 h-2 bg-slate-600 rounded-full border border-slate-900 transition-colors"></div>
+                            </div>
+                            <span class="text-[8px] text-slate-500 font-bold mt-1 tracking-wider uppercase">Exhaust Fan</span>
+                        </div>
+
+                        <!-- Siluet Bayangan Pengunjung -->
+                        <div id="person-avatar" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-slate-700 opacity-20 transform translate-y-6 scale-95 transition-all duration-500 flex flex-col items-center pointer-events-none z-10">
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-2 flex flex-col items-center shadow-lg">
+                                <i class="fa-solid fa-user-ninja text-xl"></i>
+                                <span class="text-[7px] font-bold mt-0.5 text-slate-500 tracking-wider">OBYEK</span>
+                            </div>
+                        </div>
+
+                        <!-- Hitung Mundur Overlay -->
+                        <div id="countdown-overlay" class="absolute bottom-4 right-4 bg-slate-900/95 border border-slate-800 rounded-lg p-2 flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 shadow-xl z-20">
+                            <div class="relative flex items-center justify-center w-8 h-8">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2.5" class="text-slate-800" fill="transparent" />
+                                    <circle id="countdown-circle" cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2.5" class="text-emerald-500 transition-all duration-1000" fill="transparent" stroke-dasharray="81.68" stroke-dashoffset="0" />
+                                </svg>
+                                <span id="countdown-number" class="absolute font-mono font-bold text-[10px] text-emerald-400">5</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[9px] font-bold text-slate-400 leading-none">AUTO OFF</span>
+                                <span class="text-[8px] text-slate-500 mt-0.5">Sistem Timer</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- BAGAN PROSES KERJA (FLOWCHART INTERAKTIF) -->
+                <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                    <h2 class="text-sm font-bold mb-4 flex items-center gap-2 text-slate-200">
+                        <i class="fa-solid fa-circle-nodes text-emerald-400"></i> Bagan Proses Kerja Alur Otomasi
+                    </h2>
+
+                    <!-- Container Bagan Dinamis -->
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 relative">
+                        
+                        <!-- Arrow Connector (Desktop Only) -->
+                        <div class="hidden sm:block absolute top-[22px] left-0 w-full h-[1.5px] bg-slate-800 -z-10"></div>
+
+                        <!-- Step 1: Idle -->
+                        <div id="step-idle" class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex flex-col items-center text-center transition-all duration-300 relative">
+                            <div class="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-1.5 transition-colors duration-300" id="step-icon-1">
+                                <i class="fa-solid fa-clock text-[10px] text-slate-500"></i>
+                            </div>
+                            <span class="text-[9px] font-bold text-slate-300 leading-tight">1. Siaga</span>
+                            <p class="text-[8px] text-slate-500 mt-0.5 leading-snug">Sensor memantau tanpa gerakan</p>
+                        </div>
+
+                        <!-- Step 2: Triggered -->
+                        <div id="step-triggered" class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex flex-col items-center text-center transition-all duration-300 relative">
+                            <div class="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-1.5 transition-colors duration-300" id="step-icon-2">
+                                <i class="fa-solid fa-person-walking-dashed text-[10px] text-slate-500"></i>
+                            </div>
+                            <span class="text-[9px] font-bold text-slate-300 leading-tight">2. Sensor Terpicu</span>
+                            <p class="text-[8px] text-slate-500 mt-0.5 leading-snug">Gerakan terdeteksi oleh PIR</p>
+                        </div>
+
+                        <!-- Step 3: Actuator On -->
+                        <div id="step-actuators" class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex flex-col items-center text-center transition-all duration-300 relative">
+                            <div class="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-1.5 transition-colors duration-300" id="step-icon-3">
+                                <i class="fa-solid fa-bolt text-[10px] text-slate-500"></i>
+                            </div>
+                            <span class="text-[9px] font-bold text-slate-300 leading-tight">3. Aktuator On</span>
+                            <p class="text-[8px] text-slate-500 mt-0.5 leading-snug">Lampu & Kipas diaktifkan</p>
+                        </div>
+
+                        <!-- Step 4: Countdown -->
+                        <div id="step-countdown" class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex flex-col items-center text-center transition-all duration-300 relative">
+                            <div class="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-1.5 transition-colors duration-300" id="step-icon-4">
+                                <i class="fa-solid fa-hourglass-half text-[10px] text-slate-500"></i>
+                            </div>
+                            <span class="text-[9px] font-bold text-slate-300 leading-tight">4. Timer Jalan</span>
+                            <p class="text-[8px] text-slate-500 mt-0.5 leading-snug">Menjalankan waktu tunda aktif</p>
+                        </div>
+
+                        <!-- Step 5: Timeout -->
+                        <div id="step-timeout" class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex flex-col items-center text-center transition-all duration-300 relative">
+                            <div class="w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-1.5 transition-colors duration-300" id="step-icon-5">
+                                <i class="fa-solid fa-power-off text-[10px] text-slate-500"></i>
+                            </div>
+                            <span class="text-[9px] font-bold text-slate-300 leading-tight">5. Reset Mati</span>
+                            <p class="text-[8px] text-slate-500 mt-0.5 leading-snug">Otomatis padam & kembali siaga</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 bg-slate-950 px-6 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <p>© 2026 Wahyu Bambang Suhermanto. Seluruh Hak Cipta Dilindungi.</p>
+            <div class="flex gap-4">
+                <span class="hover:text-emerald-400 transition cursor-help flex items-center gap-1">
+                    <i class="fa-solid fa-microchip"></i> ESP32 RTOS
+                </span>
+                <span class="hover:text-emerald-400 transition cursor-help flex items-center gap-1">
+                    <i class="fa-solid fa-wave-square"></i> Gelombang PIR 5.8GHz
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logika JavaScript Portofolio & Simulator -->
+    <script>
+        // State Management Global
+        let systemState = 'IDLE'; // IDLE, DETECTED, ACTIVE, COUNTDOWN, RESETTING
+        let currentDuration = 5; // Durasi default (detik)
+        let soundEnabled = true;
+        let hoverMode = false;
+        
+        let countdownTimer = null;
+        let mainTimeout = null;
+        let remainingTime = 0;
+
+        // Web Audio API Synth untuk Efek Suara Buzzer
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playBeep(freq, duration, type = 'sine') {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio not supported or interaction needed first: " + e);
+            }
+        }
+
+        // Setup DOM Elements
+        const timerSlider = document.getElementById('timer-slider');
+        const timerDisplay = document.getElementById('timer-display');
+        const logContainer = document.getElementById('log-container');
+        const statusBadgeDot = document.getElementById('status-badge-dot');
+        const statusBadgeText = document.getElementById('status-badge-text');
+        const statusBadge = document.getElementById('system-status-badge');
+
+        // Elemen Pantry Simulator
+        const pirSensor = document.getElementById('pir-sensor');
+        const pirLed = document.getElementById('pir-led');
+        const detectionBeam = document.getElementById('detection-beam');
+        const lampBulb = document.getElementById('lamp-bulb');
+        const lampGlow = document.getElementById('lamp-glow');
+        const fanBlades = document.getElementById('fan-blades');
+        const fanLed = document.getElementById('fan-led');
+        const personAvatar = document.getElementById('person-avatar');
+        const countdownOverlay = document.getElementById('countdown-overlay');
+        const countdownCircle = document.getElementById('countdown-circle');
+        const countdownNumber = document.getElementById('countdown-number');
+
+        // Bagan Kerja Elements
+        const stepIdle = document.getElementById('step-idle');
+        const stepTriggered = document.getElementById('step-triggered');
+        const stepActuators = document.getElementById('step-actuators');
+        const stepCountdown = document.getElementById('step-countdown');
+        const stepTimeout = document.getElementById('step-timeout');
+
+        const stepIcons = [
+            document.getElementById('step-icon-1'),
+            document.getElementById('step-icon-2'),
+            document.getElementById('step-icon-3'),
+            document.getElementById('step-icon-4'),
+            document.getElementById('step-icon-5')
+        ];
+
+        // Event Listener untuk slider durasi
+        timerSlider.addEventListener('input', (e) => {
+            currentDuration = parseInt(e.target.value);
+            timerDisplay.textContent = `${currentDuration} Detik`;
+            addLog(`Parameter waktu tunda diubah menjadi ${currentDuration} detik.`, 'info');
+        });
+
+        // Menambahkan teks log sistem
+        function addLog(text, type = 'normal') {
+            const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
+            let typeColor = 'text-slate-300';
+            let icon = '⚡';
+            
+            if (type === 'success') {
+                typeColor = 'text-emerald-400 font-semibold';
+                icon = '✅';
+            } else if (type === 'warn') {
+                typeColor = 'text-red-400 font-semibold';
+                icon = '🚨';
+            } else if (type === 'info') {
+                typeColor = 'text-sky-400';
+                icon = '⚙️';
+            } else if (type === 'timer') {
+                typeColor = 'text-amber-400';
+                icon = '⏳';
+            }
+
+            const logEntry = document.createElement('div');
+            logEntry.className = `border-b border-slate-900/40 pb-1 ${typeColor}`;
+            logEntry.innerHTML = `<span class="text-slate-500 font-bold">[${time}]</span> ${icon} ${text}`;
+            
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // Menghapus log
+        function clearLogs() {
+            logContainer.innerHTML = '';
+            addLog("Riwayat aktivitas dibersihkan.", "info");
+        }
+
+        // Toggle Audio
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const dot = document.getElementById('sound-dot');
+            const btn = document.getElementById('sound-toggle');
+            if (soundEnabled) {
+                dot.style.transform = 'translateX(1.1rem)';
+                btn.classList.add('bg-emerald-500');
+                btn.classList.remove('bg-slate-800');
+                addLog("Buzzer suara sistem diaktifkan.", "info");
+            } else {
+                dot.style.transform = 'translateX(0.25rem)';
+                btn.classList.add('bg-slate-800');
+                btn.classList.remove('bg-emerald-500');
+                addLog("Buzzer suara sistem dimatikan (mode hening).", "info");
+            }
+        }
+
+        // Toggle Sensor Cerdas via Hover mouse
+        function toggleHoverMode() {
+            hoverMode = !hoverMode;
+            const dot = document.getElementById('hover-dot');
+            const btn = document.getElementById('hover-toggle');
+            if (hoverMode) {
+                dot.style.transform = 'translateX(1.1rem)';
+                dot.classList.add('bg-white');
+                dot.classList.remove('bg-slate-400');
+                btn.classList.add('bg-emerald-500');
+                btn.classList.remove('bg-slate-800');
+                addLog("Pemicu Cerdas aktif. Dekatkan kursor mouse ke dalam Pantry Simulator.", "success");
+            } else {
+                dot.style.transform = 'translateX(0.25rem)';
+                dot.classList.add('bg-slate-400');
+                dot.classList.remove('bg-white');
+                btn.classList.add('bg-slate-800');
+                btn.classList.remove('bg-emerald-500');
+                addLog("Pemicu Cerdas dinonaktifkan. Gunakan tombol manual.", "info");
+            }
+        }
+
+        // Menghandle gerakan hover pada pantry simulator
+        function handlePantryHover(isEntering) {
+            if (hoverMode && isEntering) {
+                if (systemState === 'IDLE') {
+                    addLog("Pemicu otomatis mendeteksi gerakan kursor mouse.", "info");
+                    triggerSensor();
+                }
+            }
+        }
+
+        // Fungsi Reset UI Bagan Kerja
+        function updateBaganVisual(activeStep) {
+            // Hapus semua kelas active terlebih dahulu
+            [stepIdle, stepTriggered, stepActuators, stepCountdown, stepTimeout].forEach(el => {
+                el.className = "bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex flex-col items-center text-center transition-all duration-300 relative";
+            });
+
+            stepIcons.forEach((icon) => {
+                icon.className = "w-7 h-7 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-1.5 transition-colors duration-300";
+                icon.firstElementChild.className = icon.firstElementChild.className.replace('text-white', 'text-slate-500');
+            });
+
+            // Terapkan highlight ke langkah aktif
+            if (activeStep === 1) { // IDLE
+                stepIdle.className += " border-emerald-500/50 bg-emerald-500/5 shadow-neon-green ring-1 ring-emerald-500/10";
+                stepIcons[0].className = "w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center mb-1.5 shadow-[0_0_8px_rgba(16,185,129,0.3)]";
+                stepIcons[0].firstElementChild.className = "fa-solid fa-clock text-[10px] text-emerald-400 animate-pulse";
+            } else if (activeStep === 2) { // TRIGGERED
+                stepTriggered.className += " border-red-500/50 bg-red-500/5 shadow-neon-red ring-1 ring-red-500/10";
+                stepIcons[1].className = "w-7 h-7 rounded-full bg-red-500/20 border border-red-500 flex items-center justify-center mb-1.5 shadow-[0_0_8px_rgba(239,68,68,0.3)]";
+                stepIcons[1].firstElementChild.className = "fa-solid fa-person-walking-dashed text-[10px] text-red-400 animate-bounce";
+            } else if (activeStep === 3) { // DEVICES ON
+                stepActuators.className += " border-amber-500/50 bg-amber-500/5 shadow-neon-amber ring-1 ring-amber-500/10";
+                stepIcons[2].className = "w-7 h-7 rounded-full bg-amber-500/20 border border-amber-500 flex items-center justify-center mb-1.5 shadow-[0_0_8px_rgba(245,158,11,0.3)]";
+                stepIcons[2].firstElementChild.className = "fa-solid fa-bolt text-[10px] text-amber-400 animate-pulse";
+            } else if (activeStep === 4) { // COUNTDOWN
+                stepCountdown.className += " border-blue-500/50 bg-blue-500/5 shadow-neon-blue ring-1 ring-blue-500/10";
+                stepIcons[3].className = "w-7 h-7 rounded-full bg-blue-500/20 border border-blue-500 flex items-center justify-center mb-1.5 shadow-[0_0_8px_rgba(59,130,246,0.3)]";
+                stepIcons[3].firstElementChild.className = "fa-solid fa-hourglass-half text-[10px] text-blue-400";
+            } else if (activeStep === 5) { // RESET/TIMEOUT
+                stepTimeout.className += " border-emerald-500/50 bg-emerald-500/5 shadow-neon-green ring-1 ring-emerald-500/10";
+                stepIcons[4].className = "w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center mb-1.5 shadow-[0_0_8px_rgba(16,185,129,0.3)]";
+                stepIcons[4].firstElementChild.className = "fa-solid fa-power-off text-[10px] text-emerald-400";
+            }
+        }
+
+        // FUNGSI UTAMA: MENYALAKAN DETEKSI MOTION (SENSOR TRIGGER)
+        function triggerSensor() {
+            if (systemState !== 'IDLE') {
+                // Perpanjang durasi waktu deteksi (re-triggerable)
+                addLog(`Gerakan tambahan terdeteksi! Mengatur ulang timer ke ${currentDuration} detik.`, "info");
+                playBeep(650, 0.1, 'sine');
+                startCountdownLogic();
+                return;
+            }
+
+            systemState = 'DETECTED';
+            updateBaganVisual(2);
+
+            // Audio Warning Buzzer (PIR aktif beep ganda)
+            playBeep(880, 0.08, 'square');
+            setTimeout(() => playBeep(880, 0.08, 'square'), 120);
+
+            // Efek UI Sensor
+            pirLed.classList.add('bg-red-500', 'shadow-[0_0_12px_rgba(239,68,68,0.8)]');
+            pirLed.classList.remove('bg-slate-600');
+            pirSensor.classList.add('pir-pulse', 'border-red-500');
+            pirSensor.classList.remove('border-slate-700');
+            
+            // Tampilkan berkas gelombang PIR
+            detectionBeam.classList.remove('from-red-500/0', 'to-red-500/0');
+            detectionBeam.classList.add('from-red-500/15', 'to-red-500/2');
+
+            // Munculkan siluet orang terdeteksi
+            personAvatar.classList.remove('opacity-20', 'translate-y-6', 'scale-95');
+            personAvatar.classList.add('opacity-100', 'translate-y-0', 'scale-100', 'text-emerald-400');
+
+            // Ganti status badge
+            statusBadgeText.textContent = "GERAKAN TERDETEKSI";
+            statusBadge.className = "px-2.5 py-0.5 bg-red-950/80 border border-red-500/30 text-red-400 text-[10px] font-bold rounded-full flex items-center gap-1.5 shadow-neon-red";
+            statusBadgeDot.className = "w-1.5 h-1.5 bg-red-500 animate-ping";
+
+            addLog("SENSOR PIR: Gerakan manusia terdeteksi di dalam pantry!", "warn");
+
+            setTimeout(() => {
+                activateDevices();
+            }, 300);
+        }
+
+        // FUNGSI UTAMA: MENYALAKAN LAMPU & FAN (AKTATOR)
+        function activateDevices() {
+            systemState = 'ACTIVE';
+            updateBaganVisual(3);
+
+            // Aktifkan Lampu (Visual Glow)
+            lampBulb.classList.remove('bg-slate-600');
+            lampBulb.classList.add('bg-amber-400', 'shadow-[0_0_25px_#f59e0b]');
+            lampGlow.classList.remove('bg-amber-400/0', '-translate-y-8');
+            lampGlow.classList.add('bg-amber-400/20', 'translate-y-0');
+
+            // Aktifkan Exhaust Fan
+            fanBlades.className = "w-10 h-10 relative flex items-center justify-center fan-spin";
+            fanLed.classList.remove('bg-slate-600');
+            fanLed.classList.add('bg-emerald-500', 'shadow-[0_0_6px_#10b981]');
+
+            addLog("MICROCONTROLLER: Mengaktifkan Relay Lampu (On) dan Exhaust Fan (On).", "success");
+
+            setTimeout(() => {
+                startCountdownLogic();
+            }, 500);
+        }
+
+        // FUNGSI UTAMA: TIMER COUNTDOWN (HITUNG MUNDUR)
+        function startCountdownLogic() {
+            if (countdownTimer) clearInterval(countdownTimer);
+            if (mainTimeout) clearTimeout(mainTimeout);
+
+            systemState = 'COUNTDOWN';
+            updateBaganVisual(4);
+            remainingTime = currentDuration;
+
+            // Update UI Overlay Countdown
+            countdownOverlay.classList.remove('translate-y-20', 'opacity-0');
+            countdownOverlay.classList.add('translate-y-0', 'opacity-100');
+            countdownNumber.textContent = remainingTime;
+
+            countdownCircle.style.strokeDashoffset = "0";
+
+            addLog(`Timer penghemat daya dimulai: ${remainingTime} detik sisa waktu aktif.`, "timer");
+
+            countdownTimer = setInterval(() => {
+                remainingTime--;
+                countdownNumber.textContent = remainingTime;
+
+                // Animasi visual cincin melingkar
+                const strokeDashValue = 81.68; // Keliling r=13
+                const percentageRemaining = remainingTime / currentDuration;
+                const offset = strokeDashValue * (1 - percentageRemaining);
+                countdownCircle.style.strokeDashoffset = offset;
+
+                if (remainingTime <= 0) {
+                    clearInterval(countdownTimer);
+                    shutdownDevices();
+                } else {
+                    if (remainingTime <= 3) {
+                        playBeep(440, 0.05, 'sine');
+                    }
+                }
+            }, 1000);
+        }
+
+        // FUNGSI UTAMA: SHUTDOWN OTOMATIS (TIMEOUT RESETS)
+        function shutdownDevices() {
+            systemState = 'RESETTING';
+            updateBaganVisual(5);
+
+            addLog("Waktu tunggu terlampaui. Mengirim instruksi matikan aktuator...", "info");
+
+            // Matikan Lampu
+            lampBulb.classList.remove('bg-amber-400', 'shadow-[0_0_25px_#f59e0b]');
+            lampBulb.classList.add('bg-slate-600');
+            lampGlow.classList.remove('bg-amber-400/20', 'translate-y-0');
+            lampGlow.classList.add('bg-amber-400/0', '-translate-y-8');
+
+            // Matikan Kipas (Animasi deselerasi)
+            fanBlades.className = "w-10 h-10 relative flex items-center justify-center fan-spin-slowdown";
+            fanLed.classList.remove('bg-emerald-500', 'shadow-[0_0_6px_#10b981]');
+            fanLed.classList.add('bg-slate-600');
+
+            // Hilangkan orang
+            personAvatar.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'text-emerald-400');
+            personAvatar.classList.add('opacity-20', 'translate-y-6', 'scale-95');
+
+            // Hilangkan sensor trigger glow
+            pirLed.classList.remove('bg-red-500', 'shadow-[0_0_12px_rgba(239,68,68,0.8)]');
+            pirLed.classList.add('bg-slate-600');
+            pirSensor.classList.remove('pir-pulse', 'border-red-500');
+            pirSensor.classList.add('border-slate-700');
+            detectionBeam.classList.remove('from-red-500/15', 'to-red-500/2');
+            detectionBeam.classList.add('from-red-500/0', 'to-red-500/0');
+
+            // Sembunyikan Overlay Countdown
+            countdownOverlay.classList.remove('translate-y-0', 'opacity-100');
+            countdownOverlay.classList.add('translate-y-20', 'opacity-0');
+
+            // Audio Tone Mati
+            playBeep(330, 0.25, 'triangle');
+
+            addLog("MICROCONTROLLER: Mematikan Relay Lampu (Off) dan Exhaust Fan (Off). Energi Terhemat!", "success");
+
+            setTimeout(() => {
+                systemState = 'IDLE';
+                updateBaganVisual(1);
+                fanBlades.className = "w-10 h-10 relative flex items-center justify-center";
+
+                // Update Status Badge
+                statusBadgeText.textContent = "STANDBY";
+                statusBadge.className = "px-2.5 py-0.5 bg-slate-950 border border-slate-800 text-slate-400 text-[10px] font-bold rounded-full flex items-center gap-1.5";
+                statusBadgeDot.className = "w-1.5 h-1.5 bg-slate-400";
+
+                addLog("Sistem kembali ke status SIAGA. Memonitor gerakan baru...", "info");
+            }, 2000);
+        }
+
+        window.onload = function () {
+            addLog("Mikrokontroler ESP32 boot selesai. Sistem siap digunakan.", "info");
+            addLog("Sensor Gerak PIR berhasil dikalibrasi ke ruangan pantry.", "info");
+            updateBaganVisual(1);
+        };
+    </script>
+</body>
+</html>
+
+
+### Kelebihan Desain Baru Ini:
+1. **Navigasi Mulus & Responsif**: Berjalan lancar baik pada tampilan ponsel cerdas (*mobile view*) maupun desktop berkat grid Tailwind CSS yang fleksibel.
+2. **Kesesuaian Tautan**: 
+   * Tautan **LinkedIn** langsung merujuk ke halaman akun profesional Anda.
+   * Tautan **Website Utama/GitHub** merujuk ke situs pribadi Anda (`https://wahyu-bambang-s.github.io`).
+   * Tautan **Kontak Langsung** (WhatsApp) sudah dikonversi secara otomatis menggunakan format internasional (+62) dari nomor telepon Anda, sehingga dapat langsung dihubungi dengan satu klik tanpa perlu HRD mengetik ulang nomor telepon.
+3. **Meningkatkan Nilai Jual Keahlian**: Dengan meletakkan ringkasan pengalaman 19+ tahun Anda tepat sebelum demo simulator, HRD akan langsung menangkap bahwa Anda adalah seorang pakar *Embedded Systems*, Kelistrikan, dan Pemeliharaan Gedung yang terbiasa membangun prototipe solusi cerdas seperti ini.
